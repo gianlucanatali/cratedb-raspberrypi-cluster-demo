@@ -18,12 +18,9 @@ prep_step(){
 
   #creating keys
   ssh-keygen
-  #echo "test"
 
   #Adding keys to RPIs , it will ask for password
   ssh-copy-id pi@$PIE_IP
-  #ssh-copy-id pi@192.168.0.102
-  #ssh-copy-id pi@192.168.0.103
 
   # --- END - PRE STEP ---
 }
@@ -148,17 +145,3 @@ main() {
 }
 
 main $1 $2
-
-#copy crate.yml from raspberrypi
-#scp pi@$PIE_IP:/home/pi/crate/crate-3.0.5/config/crate.yml /gn/crate/crate.yml
-#scp pi@$PIE_IP:/etc/security/limits.conf /gn/crate/limits.conf
-#scp pi@$PIE_IP:/etc/sysctl.conf /gn/crate/sysctl.conf
-
-#Have to manually run this on raspberrypi that have internet access (this part is wrong and obsolete)
-# sudo apt-get purge openjdk-8-jre-headless
-# sudo apt-get install openjdk-8-jre-headless
-# sudo apt-get install openjdk-8-jre
-# find $(dirname $(dirname $(readlink -f $(which java)))) -name jvm.cfg
-# vim the file you find as per here https://askubuntu.com/questions/197965/openjdk-default-options-to-always-use-the-server-vm
-#  sudo vim /usr/lib/jvm/java-8-openjdk-armhf/jre/lib/arm/jvm.cfg
-#  /usr/java/jdk1.8.0_181/jre/lib/arm/jvm.cfg
