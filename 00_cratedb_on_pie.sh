@@ -2,6 +2,11 @@
 declare_variables(){
   PIE_IP=$2
   ACTION=$1
+  BASE_PATH=$3
+  if [ -z "$3" ]
+  then
+    BASE_PATH="/res"
+  fi
 
   echo "ip is the following: $PIE_IP"
   echo "the mode is : $ACTION"
@@ -40,8 +45,8 @@ init_raspi(){
   ssh pi@$PIE_IP chmod 777 /home/pi/crate
 
   #Copying tarball to all pies
-  scp /gn/crate/crate-*.tar.gz pi@$PIE_IP:/home/pi/crate-src
-  scp /gn/crate/jdk-8u*.tar.gz pi@$PIE_IP:/home/pi/crate-src
+  scp $BASE_PATH/crate-*.tar.gz pi@$PIE_IP:/home/pi/crate-src
+  scp $BASE_PATH/jdk-8u*.tar.gz pi@$PIE_IP:/home/pi/crate-src
 
   #install Java
   echo "-- unzipping JDK tar.gz"
@@ -67,9 +72,9 @@ config_java(){
 
 configure_pi_for_crate(){
   #Copying configuration to RPI and then copy it as sudo in the right folder
-  scp /gn/crate/limits.conf pi@$PIE_IP:/home/pi/crate-src/limits.conf
-  scp /gn/crate/sysctl.conf pi@$PIE_IP:/home/pi/crate-src/sysctl.conf
-  scp /gn/crate/crate pi@$PIE_IP:/home/pi/crate-src/crate
+  scp $BASE_PATH/limits.conf pi@$PIE_IP:/home/pi/crate-src/limits.conf
+  scp $BASE_PATH/sysctl.conf pi@$PIE_IP:/home/pi/crate-src/sysctl.conf
+  scp $BASE_PATH/crate pi@$PIE_IP:/home/pi/crate-src/crate
   ssh pi@$PIE_IP "sudo cp -rf /home/pi/crate-src/limits.conf /etc/security/limits.conf"
   ssh pi@$PIE_IP "sudo cp -rf /home/pi/crate-src/sysctl.conf /etc/sysctl.conf"
   ssh pi@$PIE_IP "sudo cp -rf /home/pi/crate-src/crate /etc/default/crate"
@@ -81,10 +86,10 @@ configure_pi_for_crate(){
 }
 
 copy_files_to_pi(){
-  #Copying configuration to RPI and then copy it as sudo in the right folder
-  scp /gn/appo/iot_devices_1.csv pi@192.168.0.101:/home/pi/crate-src/iot_devices.csv
-  scp /gn/appo/iot_devices_2.csv pi@192.168.0.102:/home/pi/crate-src/iot_devices.csv
-  scp /gn/appo/iot_devices_3.csv pi@192.168.0.103:/home/pi/crate-src/iot_devices.csv
+  #Copying data to RPI and then copy it as sudo in the right folder. These files are to big, I'll switch to a python code that generates random data...
+  scp $BASE_PATH/csv/iot_devices_1.csv pi@192.168.0.101:/home/pi/crate-src/iot_devices.csv
+  scp $BASE_PATH/csv/iot_devices_2.csv pi@192.168.0.102:/home/pi/crate-src/iot_devices.csv
+  scp $BASE_PATH/csv/iot_devices_3.csv pi@192.168.0.103:/home/pi/crate-src/iot_devices.csv
 
 }
 
@@ -97,7 +102,7 @@ install_crate(){
   echo "-----Start Crate-----"
   echo "-- unzipping tar.gz"
   ssh pi@$PIE_IP tar -vxzf /home/pi/crate-src/crate-*.tar.gz -C /home/pi/crate
-  scp /gn/crate/crate.yml pi@$PIE_IP:/home/pi/crate/crate-*/config/crate.yml
+  scp $BASE_PATH/crate.yml pi@$PIE_IP:/home/pi/crate/crate-*/config/crate.yml
   #ssh pi@$PIE_IP /home/pi/crate/crate-*/bin/crate
 }
 
